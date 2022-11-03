@@ -26,10 +26,10 @@ export const CalendarModal = () => {
 
     const { 
         customStyles,
-        open,
+        isDateModalOpen,
         formValue,
         onInputChange,
-        onCloseModal,
+        closeModal,
         onDateChange,
         titleClass,
         handleSubmit } = useCalendarModal(formData);
@@ -38,8 +38,8 @@ export const CalendarModal = () => {
 
     return (
         <Modal
-            isOpen={open}
-            onRequestClose={onCloseModal}
+            isOpen={isDateModalOpen}
+            onRequestClose={closeModal}
             style={customStyles}
             className="modal"
             overlayClassName="modal-fondo"

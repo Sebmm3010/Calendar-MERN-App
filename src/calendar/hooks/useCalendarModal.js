@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { differenceInSeconds } from "date-fns";
 import { toast } from "react-toastify";
+import { useUiStore } from "../../hooks/useUiStore";
 
 export const useCalendarModal = (formData) => {
     const customStyles = {
@@ -14,7 +15,7 @@ export const useCalendarModal = (formData) => {
         },
     };
 
-
+    const { isDateModalOpen, closeDateModal }= useUiStore();
     const [open, setOpen] = useState(true);
 
     const [formSubmitted, setFormSubmitted] = useState(false)
@@ -28,15 +29,16 @@ export const useCalendarModal = (formData) => {
         })
     }
 
-    const onCloseModal = () => {
-        setOpen(false);
-    }
 
     const onDateChange = (event, changing) => {
         setFormValue({
             ...formValue,
             [changing]: event
         });
+    }
+
+    const closeModal=()=>{
+        closeDateModal();
     }
 
     const titleClass = useMemo(() => {
@@ -71,10 +73,10 @@ export const useCalendarModal = (formData) => {
 
     return{
         customStyles,
-        open,
+        isDateModalOpen,
         formValue,
         onInputChange,
-        onCloseModal,
+        closeModal,
         onDateChange,
         titleClass,
         handleSubmit
