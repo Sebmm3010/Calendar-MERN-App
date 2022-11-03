@@ -1,13 +1,11 @@
-import { useMemo, useState } from 'react';
-
-import { addHours, differenceInSeconds, setHours, setMinutes, subDays } from 'date-fns';
+import { addHours, setHours, setMinutes, subDays } from 'date-fns';
 import es from 'date-fns/locale/es';
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import Modal from 'react-modal';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCalendarModal } from '../hooks/useCalendarModal';
 
@@ -25,80 +23,6 @@ const formData = {
 }
 
 export const CalendarModal = () => {
-
-    // const customStyles = {
-    //     content: {
-    //         top: '50%',
-    //         left: '50%',
-    //         right: 'auto',
-    //         bottom: 'auto',
-    //         marginRight: '-50%',
-    //         transform: 'translate(-50%, -50%)',
-    //     },
-    // };
-
-    // const [open, setOpen] = useState(true);
-
-    // const [formSubmitted, setFormSubmitted] = useState(false)
-
-    // const [formValue, setFormValue] = useState({
-    //     title: '',
-    //     notes: '',
-    //     start: new Date(),
-    //     end: addHours(new Date(), 2)
-    // });
-
-
-    // // const [startDate, setStartDate] = useState(new Date());
-
-    // const onInputChange = ({ target }) => {
-    //     setFormValue({
-    //         ...formValue,
-    //         [target.name]: target.value
-    //     })
-    // }
-
-    // const onCloseModal = () => {
-    //     setOpen(false);
-    // }
-
-    // const onDateChange = (event, changing) => {
-    //     setFormValue({
-    //         ...formValue,
-    //         [changing]: event
-    //     })
-    // }
-
-
-    // const titleClass = useMemo(() => {
-    //     if (!formSubmitted) return '';
-
-    //     return (formValue.title.length > 0)
-    //         ? 'is-valid'
-    //         : 'is-invalid'
-    // }, [formValue.title, formSubmitted]);
-
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-    //     setFormSubmitted(true);
-    //     const difference = differenceInSeconds(formValue.end, formValue.start);
-
-    //     if (isNaN(difference) || difference <= 0) {
-    //         toast.error('Fechas invalidas', {
-    //             position: "top-center",
-    //             autoClose: 2000,
-    //             hideProgressBar: false,
-    //             closeOnClick: true,
-    //             pauseOnHover: true,
-    //             draggable: true,
-    //             progress: undefined,
-    //             theme: "colored",
-    //         });
-    //         return;
-    //     }
-    //     if (formValue.title.length <= 0) return;
-    //     console.log(formValue);
-    // }
 
     const { 
         customStyles,
@@ -131,8 +55,6 @@ export const CalendarModal = () => {
                         locale="es"
                         selected={formValue.start}
                         minDate={subDays(new Date(), 0)}
-                        minTime={setHours(setMinutes(new Date(), 0), new Date().getHours())}
-                        maxTime={setHours(setMinutes(new Date(), 59), 23)}
                         showTimeSelect
                         className="form-control"
                         onChange={(event) => onDateChange(event, 'start')}
@@ -145,8 +67,6 @@ export const CalendarModal = () => {
                     <DatePicker
                         locale="es"
                         minDate={formValue.start}
-                        minTime={setHours(setMinutes(new Date(), 0), new Date().getHours())}
-                        maxTime={setHours(setMinutes(new Date(), 59), 23)}
                         showTimeSelect
                         selected={formValue.end}
                         className="form-control"
