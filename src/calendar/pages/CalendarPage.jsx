@@ -9,25 +9,13 @@ import { CalendarEvent } from '../components/CalendarEvent';
 import { useState } from 'react';
 import { CalendarModal } from '../components/CalendarModal';
 import { useUiStore } from '../../hooks/useUiStore';
-
-
-const events = [{
-  title: 'Cupleaños',
-  notes: 'Comprar pudin',
-  start: new Date(),
-  end: addHours(new Date(), 2),
-  bgColor: '#fafafa',
-  user: {
-    _id: '123',
-    name: 'Sebastian'
-  }
-}];
+import { useCalendarStore } from '../../hooks/useCalendaStore';
 
 
 export const CalendarPage = () => {
 
   const [lastView, setLastView] = useState(localStorage.getItem('lastView') || "week");
-
+  const { events }=useCalendarStore();
   const { openDateModal }= useUiStore();
 
   const eventStyleGetter = (event, start, end, isSelected) => {
