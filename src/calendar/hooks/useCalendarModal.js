@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { differenceInSeconds } from "date-fns";
 import { toast } from "react-toastify";
 import { useUiStore } from "../../hooks/useUiStore";
+import { useCalendarStore } from "../../hooks/useCalendarStore";
 
 export const useCalendarModal = (formData) => {
     const customStyles = {
@@ -16,7 +17,8 @@ export const useCalendarModal = (formData) => {
     };
 
     const { isDateModalOpen, closeDateModal }= useUiStore();
-    const [open, setOpen] = useState(true);
+
+    const { activeEvent, startSavingEvent }= useCalendarStore()
 
     const [formSubmitted, setFormSubmitted] = useState(false)
 
@@ -49,7 +51,14 @@ export const useCalendarModal = (formData) => {
             : 'is-invalid'
     }, [formValue.title, formSubmitted]);
 
-    const handleSubmit = (event) => {
+    useEffect(() => {
+      if(activeEvent !== null) {
+          setFormValue({ ...activeEvent });
+      }
+    }, [activeEvent]);
+    
+
+    const handleSubmit = async(event) => {
         event.preventDefault();
         setFormSubmitted(true);
         const difference = differenceInSeconds(formValue.end, formValue.start);
@@ -68,7 +77,10 @@ export const useCalendarModal = (formData) => {
             return;
         }
         if (formValue.title.length <= 0) return;
-        console.log(formValue);
+
+        await startSavingEvent(formValue);
+        closeDateModal();
+        setFormSubmitted(false);
     }
 
     return{
