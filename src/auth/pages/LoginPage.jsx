@@ -18,9 +18,10 @@ const registerFields = {
 export const LoginPage = () => {
   // State password
   const [showHide, setShowHide] = useState(false);
+  const [showHideRegister, setShowHideRegister] = useState(false);
 
   // Auth store
-  const { startLogin, errorMessage } = useAuthStore();
+  const { startLogin, startRegister, errorMessage } = useAuthStore();
   // USe form fields
   const { loginEmail, loginPassword, onInputChange: onLoginInputChange } = useForm(loginFields);
   const { registerName, registerEmail, registerPassword, registerPassword2, onInputChange: onRegisterInputChange } = useForm(registerFields);
@@ -32,17 +33,37 @@ export const LoginPage = () => {
   // Registro submit
   const registerSubmit = (event) => {
     event.preventDefault();
-    console.log({ registerName, registerEmail, registerPassword, registerPassword2 });
+    if (registerPassword !== registerPassword2) {
+      toast.error('Las contraseñas deben ser iguales', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      return;
+    }
+    console.log(startRegister({name:registerName, email:registerEmail, password:registerPassword}));
+    
   }
   // Ocultar/ mostrar contraseña
+  // login
   const showHidePassword = () => {
     setShowHide(!showHide);
+  }
+
+  // Registro
+  const showHidePasswordRegister = () => {
+    setShowHideRegister(!showHideRegister);
   }
 
   // Notificacion de error
 
   useEffect(() => {
-    if(errorMessage !== undefined){
+    if (errorMessage !== undefined) {
       toast.error(errorMessage, {
         position: "top-right",
         autoClose: 2000,
@@ -55,7 +76,7 @@ export const LoginPage = () => {
       });
     }
   }, [errorMessage])
-  
+
 
 
 
@@ -126,7 +147,7 @@ export const LoginPage = () => {
             </div>
             <div className="form-group mb-2">
               <input
-                type="password"
+                type={showHideRegister ? 'text' : 'password'}
                 className="form-control"
                 placeholder="Contraseña"
                 name='registerPassword'
@@ -137,7 +158,7 @@ export const LoginPage = () => {
 
             <div className="form-group mb-2">
               <input
-                type="password"
+                type={showHideRegister ? 'text' : 'password'}
                 className="form-control"
                 placeholder="Repita la contraseña"
                 name='registerPassword2'
@@ -145,6 +166,12 @@ export const LoginPage = () => {
                 onChange={onRegisterInputChange}
               />
             </div>
+
+            <input type="checkbox"
+              className='mt-4 mb-3'
+              name="showHideRegister"
+              onChange={showHidePasswordRegister} />
+            <label htmlFor="showHideRegister" className='text-light'>Mostrar Contraseña</label>
 
             <div className="d-grid gap-2">
               <input
@@ -155,7 +182,7 @@ export const LoginPage = () => {
           </form>
         </div>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   )
 }
