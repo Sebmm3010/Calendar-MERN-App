@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import { useAuthStore, useForm } from '../../hooks';
 import './LoginPage.css';
 
@@ -15,25 +16,48 @@ const registerFields = {
 }
 
 export const LoginPage = () => {
-
+  // State password
   const [showHide, setShowHide] = useState(false);
-  const { startLogin } = useAuthStore();
+
+  // Auth store
+  const { startLogin, errorMessage } = useAuthStore();
+  // USe form fields
   const { loginEmail, loginPassword, onInputChange: onLoginInputChange } = useForm(loginFields);
   const { registerName, registerEmail, registerPassword, registerPassword2, onInputChange: onRegisterInputChange } = useForm(registerFields);
-
+  // Login submit
   const loginSubmit = (event) => {
     event.preventDefault();
     startLogin({ email: loginEmail, password: loginPassword });
   }
-
+  // Registro submit
   const registerSubmit = (event) => {
     event.preventDefault();
     console.log({ registerName, registerEmail, registerPassword, registerPassword2 });
   }
-
+  // Ocultar/ mostrar contraseña
   const showHidePassword = () => {
     setShowHide(!showHide);
   }
+
+  // Notificacion de error
+
+  useEffect(() => {
+    if(errorMessage !== undefined){
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  }, [errorMessage])
+  
+
+
 
   return (
     /* LOGIN */
@@ -131,6 +155,7 @@ export const LoginPage = () => {
           </form>
         </div>
       </div>
+      <ToastContainer/>
     </div>
   )
 }
