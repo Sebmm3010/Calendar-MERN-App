@@ -42,8 +42,26 @@ export const useCalendarStore = () => {
 
     }
 
-    const startDeletingEvent = () => {
-        dispatch(onDeleteEvent());
+    const startDeletingEvent = async () => {
+
+        try {
+
+            await calendarApi.delete(`/events/${activeEvent.id}`);
+            dispatch(onDeleteEvent());
+
+        } catch (error) {
+            console.log(error);
+            toast.error(`Error al eliminar: ${error.response.data?.msg}`, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
+        }
     }
 
     const startLoadingEvents = async () => {
