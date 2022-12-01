@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
+import { toast } from "react-toastify";
 import { calendarApi } from "../api";
 import { stringToDate } from "../helpers";
 import { onAddNewEvent, onDeleteEvent, onLoadEvents, onSetActiveEvent, onUpdateEvent } from "../store";
@@ -14,16 +15,31 @@ export const useCalendarStore = () => {
     }
 
     const startSavingEvent = async (calendarEvent) => {
-        if (calendarEvent._id) {
-            dispatch(onUpdateEvent({ ...calendarEvent }));
-        } else {
+        try {
+            if (calendarEvent.id) {
+
+                await calendarApi.put(`/events/${calendarEvent.id}`, calendarEvent);
+                dispatch(onUpdateEvent({ ...calendarEvent, user }));
+                return;
+            }
 
             // Crear el evento en la base de datos
             const { data } = await calendarApi.post('/events', calendarEvent);
-
-
             dispatch(onAddNewEvent({ id: data.evento.id, user, ...calendarEvent }));
+        } catch (error) {
+            console.log(error);
+            toast.error(`Error al guardar: ${error.response.data?.msg}`, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+            });
         }
+
     }
 
     const startDeletingEvent = () => {
@@ -33,9 +49,9 @@ export const useCalendarStore = () => {
     const startLoadingEvents = async () => {
         try {
 
-            const { data }= await calendarApi.get('/events');
+            const { data } = await calendarApi.get('/events');
 
-            const events= stringToDate( data.eventos );
+            const events = stringToDate(data.eventos);
             dispatch(onLoadEvents(events));
 
         } catch (error) {
